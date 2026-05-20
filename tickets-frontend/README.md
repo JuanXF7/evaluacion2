@@ -53,7 +53,6 @@ src/
 6. PrivateRoute verifica autenticación
 7. Si no está autenticado, redirige a /login
 8. Al logout se limpian localStorage y estado
-
 ## Variables de Entorno
 
 ```env
