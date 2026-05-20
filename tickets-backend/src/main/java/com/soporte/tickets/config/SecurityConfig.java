@@ -58,12 +58,16 @@ public class SecurityConfig {
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Preflight CORS
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Rutas públicas
                 .requestMatchers("/api/auth/**").permitAll()
-                // Categorías - lectura pública para autenticados
-                .requestMatchers(HttpMethod.GET, "/api/categorias/**").authenticated()
+                // Lecturas de categorías disponibles para cualquier usuario autenticado
+                .requestMatchers(HttpMethod.GET, "/api/categorias", "/api/categorias/**").authenticated()
                 // Gestión de categorías solo ADMIN
                 .requestMatchers("/api/categorias/**").hasRole("ADMIN")
+                // Lecturas de usuarios disponibles para cualquier usuario autenticado
+                .requestMatchers(HttpMethod.GET, "/api/usuarios", "/api/usuarios/**").authenticated()
                 // Gestión de usuarios solo ADMIN
                 .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
                 // Todo lo demás requiere autenticación
@@ -80,7 +84,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cache-Control", "X-Requested-With"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -11,7 +11,7 @@ export interface JwtResponse {
   email: string;
   nombre: string;
   apellido: string;
-  role: 'ADMIN' | 'AGENT' | 'CLIENT';
+  role: 'ADMIN' | 'TECNICO' | 'USUARIO';
 }
 
 export interface ApiResponse<T> {
@@ -26,7 +26,13 @@ export interface User {
   email: string;
   nombre: string;
   apellido: string;
-  role: 'ADMIN' | 'AGENT' | 'CLIENT';
+  role: 'ADMIN' | 'TECNICO' | 'USUARIO';
+}
+
+export interface Category {
+  id: number;
+  nombre: string;
+  descripcion?: string;
 }
 
 export interface AuthContextType {
@@ -37,4 +43,38 @@ export interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+}
+
+export interface Ticket {
+  id?: number;
+  _id?: string;
+  titulo?: string;
+  title?: string;
+  descripcion?: string;
+  status?: string;
+  estado?: string;
+  prioridad?: string;
+  priority?: string;
+  categoriaId?: number;
+  categoriaNombre?: string;
+  category?: string;
+  categoria?: string;
+  asignadoAId?: number;
+  asignadoAUsername?: string;
+  asignadoANombreCompleto?: string;
+  assignedUser?: string;
+  usuario?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  fecha?: string;
+}
+
+export interface TicketRequest {
+  titulo: string;
+  descripcion: string;
+  prioridad: 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+  status?: 'ABIERTO' | 'EN_PROCESO' | 'PENDIENTE' | 'RESUELTO' | 'CERRADO';
+  categoriaId?: number;
+  asignadoAId?: number;
+  closedAt?: string;
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -47,15 +48,39 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = Ticket.builder()
                 .titulo(request.getTitulo())
                 .descripcion(request.getDescripcion())
+                .status(request.getStatus() != null ? request.getStatus() : TicketStatus.ABIERTO)
                 .prioridad(request.getPrioridad())
                 .categoria(category)
                 .creadoPor(creator)
                 .build();
 
+        if (request.getAsignadoAId() != null) {
+            User tecnico = userRepository.findById(request.getAsignadoAId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Técnico", request.getAsignadoAId()));
+            if (tecnico.getRole() != Role.TECNICO && tecnico.getRole() != Role.ADMIN) {
+                throw new BadRequestException("El usuario seleccionado no tiene rol de técnico");
+            }
+            ticket.setAsignadoA(tecnico);
+        }
+
+        if (request.getClosedAt() != null && !request.getClosedAt().isBlank()) {
+            try {
+                ticket.setClosedAt(LocalDateTime.parse(request.getClosedAt()));
+            } catch (DateTimeParseException e) {
+                throw new BadRequestException("closedAt debe tener formato ISO 8601, por ejemplo 2024-05-20T15:30:00");
+            }
+        }
+
+        if ((ticket.getStatus() == TicketStatus.CERRADO || ticket.getStatus() == TicketStatus.RESUELTO)
+                && ticket.getClosedAt() == null) {
+            ticket.setClosedAt(LocalDateTime.now());
+        }
+
         return mapToResponse(ticketRepository.save(ticket));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponse> findAll(UserDetails currentUser) {
         User user = getUser(currentUser.getUsername());
 
@@ -69,6 +94,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TicketResponse findById(Long id, UserDetails currentUser) {
         Ticket ticket = getTicket(id);
         User user = getUser(currentUser.getUsername());
@@ -159,24 +185,28 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponse> findByStatus(TicketStatus status) {
         return ticketRepository.findByStatus(status).stream()
                 .map(this::mapToResponse).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponse> findByPriority(Priority prioridad) {
         return ticketRepository.findByPrioridad(prioridad).stream()
                 .map(this::mapToResponse).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponse> findSinAsignar() {
         return ticketRepository.findTicketsSinAsignar().stream()
                 .map(this::mapToResponse).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TicketResponse> findMisTickets(UserDetails currentUser) {
         User user = getUser(currentUser.getUsername());
         if (user.getRole() == Role.TECNICO) {
