@@ -8,6 +8,6 @@ Password:admin123
 
 El usuario de tecnico o usuario:
 
-User: tecnico1
+User: usuario1
 
-Password:tecnico123
+Password:usuario123
