@@ -16,7 +16,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ user, isAdmin, canCreateTicket, selectedTab, onTabChange, onLogout }) => {
   const tabs: Array<{ id: TabId; label: string; visible: boolean }> = [
     { id: 'account', label: 'Información de cuenta', visible: true },
-    { id: 'tickets', label: 'Listado de tickets', visible: isAdmin },
+    { id: 'tickets', label: 'Listado de tickets', visible: isAdmin || user?.role === 'TECNICO' },
     { id: 'create', label: 'Generar ticket', visible: canCreateTicket },
   ];
 

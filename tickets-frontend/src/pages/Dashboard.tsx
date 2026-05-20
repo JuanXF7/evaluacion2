@@ -12,6 +12,7 @@ export const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const isAdmin = user?.role === 'ADMIN';
+  const canViewTickets = isAdmin || user?.role === 'TECNICO';
   const canCreateTicket = user?.role === 'TECNICO' || user?.role === 'USUARIO';
   const [activeTab, setActiveTab] = useState<TabId>('account');
 
@@ -51,7 +52,7 @@ export const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'tickets' && isAdmin && <TicketDashboard />}
+        {activeTab === 'tickets' && canViewTickets && <TicketDashboard />}
 
         {activeTab === 'create' && canCreateTicket && (
           <div className="ticket-action-panel">
@@ -63,7 +64,7 @@ export const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'tickets' && !isAdmin && (
+        {activeTab === 'tickets' && !canViewTickets && (
           <div className="info-box">
             No tienes permiso para ver el listado de tickets.
           </div>
