@@ -1,7 +1,11 @@
 El usuario Admin :
+
 User: Admin
+
 Password:admin123
 
 El usuario de tecnico o usuario:
+
 User: Tecnico1
-password:tecnico123
+
+Password:tecnico123
