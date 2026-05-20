@@ -2,12 +2,12 @@ En el apartado dirigido para el admin aparecera el listado de los tickets mientr
 
 El usuario Admin :
 
-User: Admin
+User: admin
 
 Password:admin123
 
 El usuario de tecnico o usuario:
 
-User: Tecnico1
+User: tecnico1
 
 Password:tecnico123
