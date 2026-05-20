@@ -97,6 +97,12 @@ export const TicketDashboard: React.FC = () => {
     await updateTicketStatus(ticket.id ?? 0, newStatus);
   };
 
+  const handleClearFilters = () => {
+    setStatusFilter('ALL');
+    setCategoryFilter('ALL');
+    setAgeFilter('newest');
+  };
+
   const renderStatus = (status?: string) => {
     const value = normalizeStatus(status);
     switch (value) {
@@ -207,6 +213,13 @@ export const TicketDashboard: React.FC = () => {
             ))}
           </select>
         </label>
+
+        <button
+          onClick={handleClearFilters}
+          className="ticket-dashboard__clear-button"
+        >
+          Limpiar filtros
+        </button>
       </div>
 
       {loading && <div className="ticket-dashboard__status">Cargando tickets...</div>}

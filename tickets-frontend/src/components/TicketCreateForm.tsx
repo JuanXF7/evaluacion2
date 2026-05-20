@@ -127,11 +127,13 @@ export const TicketCreateForm: React.FC = () => {
           Asignado a
           <select value={asignadoAId} onChange={(event) => setAsignadoAId(event.target.value)}>
             <option value="">Selecciona un usuario</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.nombre} {user.apellido} ({user.role})
-              </option>
-            ))}
+            {users
+              .filter((user) => user.role === 'TECNICO')
+              .map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.nombre} {user.apellido} ({user.role})
+                </option>
+              ))}
           </select>
         </label>
 
